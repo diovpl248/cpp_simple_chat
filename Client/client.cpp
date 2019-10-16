@@ -58,7 +58,17 @@ int main()
 	tAddr.sin_port = htons(PORT);
 	tAddr.sin_addr.s_addr = inet_addr(SERVER_IP);
 
-	connect(hSocket, (SOCKADDR*)& tAddr, sizeof(tAddr));
+	auto result = connect(hSocket, (SOCKADDR*)& tAddr, sizeof(tAddr));
+
+	if (result == SOCKET_ERROR)
+	{
+		cout << "서버에 접속을 실패했습니다." << endl;
+		WSACleanup(); // 끝
+
+		system("pause");
+		return 0;
+	}
+
 
 	thread listenThread(recvWorker, ref(hSocket));
 	thread sendThread(sendWorker, ref(hSocket));
